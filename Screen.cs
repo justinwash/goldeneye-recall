@@ -33,14 +33,29 @@ namespace Screen
         public bool ShouldPlay(string procName, int x, int y)
         {
             var window = CaptureApplication(procName);
-            var pixelColor = PollPixel(window, x, y);
-            if (pixelColor.R == 0 && pixelColor.G == 0 && pixelColor.B == 0)
+            if (x > 3 && y > 3)
             {
-                return false;
+                var pixel1 = PollPixel(window, x, y);
+                var pixel2 = PollPixel(window, x - 3, y - 3);
+                var pixel3 = PollPixel(window, x + 3, y + 3);
+
+                if (IsBlack(pixel1) && IsBlack(pixel2) && IsBlack(pixel3))
+                {
+                    return false;
+                }
+                else return true;
             }
             else return true;
         }
 
+        public bool IsBlack(Color c)
+        {
+            if (c.R < 14 && c.G < 14 && c.B < 14)
+            {
+                return true;
+            }
+            else return false;
+        }
         private class User32
         {
             [StructLayout(LayoutKind.Sequential)]
