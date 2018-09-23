@@ -8,10 +8,11 @@ namespace Screen
 {
     class Pixel
     {
-        public void PollPixel(Bitmap image, int x, int y)
+        public Color PollPixel(Bitmap image, int x, int y)
         {
             var pixelColor = image.GetPixel(x, y);
             Console.WriteLine(pixelColor);
+            return pixelColor;
         }
 
         public Bitmap CaptureApplication(string procName)
@@ -29,12 +30,15 @@ namespace Screen
             return bmp;
         }
 
-        public void CheckForReset(string procName, int x, int y)
+        public bool ShouldPlay(string procName, int x, int y)
         {
             var window = CaptureApplication(procName);
-            PollPixel(window, x, y);
-            window.Save("temp.png", ImageFormat.Png);
-
+            var pixelColor = PollPixel(window, x, y);
+            if (pixelColor.R == 0 && pixelColor.G == 0 && pixelColor.B == 0)
+            {
+                return false;
+            }
+            else return true;
         }
 
         private class User32
