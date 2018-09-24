@@ -1,17 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Screen
 {
     class Pixel
     {
+        public static List<Color> buffer = new List<Color>();
         public Color PollPixel(Bitmap image, int x, int y)
         {
             var pixelColor = image.GetPixel(x, y);
+            if (buffer.Count >= 12) {
+                buffer.Remove(buffer[0]);
+                buffer.Remove(buffer[1]);
+                buffer.Remove(buffer[2]);
+            }
             Console.WriteLine(pixelColor);
+            buffer.Add(pixelColor);
             return pixelColor;
         }
 
@@ -35,17 +44,24 @@ namespace Screen
             var window = CaptureApplication(procName);
             if (x > 3 && y > 3)
             {
-                var pixel1 = PollPixel(window, x, y);
-                var pixel2 = PollPixel(window, x - 3, y - 3);
-                var pixel3 = PollPixel(window, x + 3, y + 3);
+                PollPixel(window, x, y);
+                PollPixel(window, x - 3, y - 3);
+                PollPixel(window, x + 3, y + 3);
 
-                if (IsBlack(pixel1) && IsBlack(pixel2) && IsBlack(pixel3))
+                if (buffer.Any(o => o != buffer[0]) == false)
                 {
+                    Console.WriteLine("dont play");
                     return false;
                 }
-                else return true;
+                else {
+                    Console.WriteLine("play");
+                    return true;
+                }
             }
-            else return true;
+            else {
+                Console.WriteLine("play");
+                return true;
+            }
         }
 
         public bool IsBlack(Color c)

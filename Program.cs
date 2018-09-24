@@ -15,7 +15,7 @@ namespace GoldenEyeRecall
             while (true)
             {
                 var p = new Pixel();
-                if (p.ShouldPlay("obs64", 600, 300))
+                if (p.ShouldPlay("obs64", 600, 200))
                 {
                     if (!playing)
                     {
@@ -34,7 +34,7 @@ namespace GoldenEyeRecall
                     }
                 }
 
-                Thread.Sleep(40);
+                Thread.Sleep(400);
             }
         }
 
