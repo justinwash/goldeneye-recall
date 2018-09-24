@@ -34,7 +34,7 @@ namespace GoldenEyeRecall
                     }
                 }
 
-                Thread.Sleep(40);
+                Thread.Sleep(200);
             }
         }
 
