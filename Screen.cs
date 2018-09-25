@@ -14,13 +14,15 @@ namespace Screen
 		public Color PollPixel(Bitmap image, int x, int y)
 		{
 			var pixelColor = image.GetPixel(x, y);
-			if (buffer.Count >= 12)
+			if (buffer.Count >= 24)
 			{
 				buffer.Remove(buffer[0]);
 				buffer.Remove(buffer[1]);
 				buffer.Remove(buffer[2]);
+				buffer.Remove(buffer[3]);
+				buffer.Remove(buffer[4]);
+				buffer.Remove(buffer[5]);
 			}
-			Console.WriteLine(pixelColor);
 			buffer.Add(pixelColor);
 			return pixelColor;
 		}
@@ -45,13 +47,22 @@ namespace Screen
 			var window = CaptureApplication(procName);
 			if (x > 3 && y > 3)
 			{
-				PollPixel(window, x, y);
-				PollPixel(window, x - 3, y - 3);
-				PollPixel(window, x + 3, y + 3);
+				PollPixel(window, window.Width/2, window.Height/3);
+				PollPixel(window, window.Width/2 - 5, window.Height/3 - 5);
+				PollPixel(window, window.Width/2 + 15, window.Height/3 - 20);
+				PollPixel(window, window.Width/2 - 5, window.Height/3 - 25);
+				PollPixel(window, window.Width/2 + 15, window.Height/3 - 15);
+				PollPixel(window, window.Width/2 + 30, window.Height/3 - 30);
+				
 
-				if (buffer.Any(o => o != buffer[0]) == false)
+				if (buffer.Any(o => o != buffer[0]) == false && buffer.All(o => o.R < 32 && o.G < 32 && o.B < 32))
 				{
 					Console.WriteLine("resetting");
+					buffer.Clear();
+					return false;
+				}
+				else if (buffer.All(o => o.R < 12 && o.G < 12 && o.B < 12)) {
+					buffer.Clear();
 					return false;
 				}
 				else

@@ -14,8 +14,8 @@ namespace GoldenEyeRecall
             var playing = true;
             while (true)
             {
-                var p = new Pixel();
-                if (p.ShouldPlay("obs64", 600, 300))
+                var p = new ScreenReader();
+                if (p.IsLoading("obs64", 600, 300))
                 {
                     if (!playing)
                     {
@@ -34,7 +34,7 @@ namespace GoldenEyeRecall
                     }
                 }
 
-                Thread.Sleep(200);
+                Thread.Sleep(10);
             }
         }
 
