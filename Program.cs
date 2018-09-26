@@ -10,31 +10,20 @@ namespace GoldenEyeRecall
     {
         static void Main(string[] args)
         {
-            var paused = false;
-            var playing = true;
+            var p = new ScreenReader();
+
             while (true)
             {
-                var p = new ScreenReader();
-                if (p.IsLoading("obs64", 600, 300))
+                if (!p.IsLoading())
                 {
-                    if (!playing)
-                    {
-                        PlayVid();
-                        playing = true;
-                        paused = false;
-                    }
+                    PlayVid();
                 }
                 else
                 {
-                    if (!paused)
-                    {
-                        ResetVid();
-                        paused = true;
-                        playing = false;
-                    }
+                    ResetVid();
                 }
 
-                Thread.Sleep(10);
+                Thread.Sleep(56);
             }
         }
 
