@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Screen
 {
@@ -16,7 +17,7 @@ namespace Screen
 
         public void UpdateBuffer(byte[] data)
         {
-            if (buffer.Count >= 2)
+            if (buffer.Count >= 3)
             {
                 buffer.Remove(buffer[0]);
             }
@@ -33,7 +34,7 @@ namespace Screen
             Graphics graphics = Graphics.FromImage(bmp);
             graphics.CopyFromScreen(rect.left, rect.top, 0, 0, new Size(width, height), CopyPixelOperation.SourceCopy);
 
-            var testRect = new Rectangle(bmp.Width / 2, bmp.Height / 3, 24, 24);
+            var testRect = new Rectangle(bmp.Width / 2, bmp.Height / 3, 28, 12);
             BitmapData bmpData = bmp.LockBits(testRect, System.Drawing.Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat);
             IntPtr ptr = bmpData.Scan0;
             int bytes = Math.Abs(bmpData.Stride) * bmpData.Height;
@@ -49,34 +50,33 @@ namespace Screen
             var colorData = CaptureTestArea();
             UpdateBuffer(colorData);
 
-            List<bool> blackOrNot = new List<bool>();
+            List<bool> blackBuffer = new List<bool>();
             foreach (var b in buffer)
             {
                 var avg = b.Average(x => int.Parse(x.ToString()) * 2);
-                if (avg > 75)
+                if (avg > 70)
                 {
                     Console.WriteLine("not black enough: " + avg);
                     //buffer.Clear();
-                    blackOrNot.Add(false);
+                    blackBuffer.Add(false);
                 }
                 else
                 {
                     Console.WriteLine("black enough: " + avg);
-                    blackOrNot.Add(true);
+                    blackBuffer.Add(true);
                 }
             }
 
-            if (blackOrNot.All(t => t != true))
-            {
-                Console.WriteLine("Not Loading");
-                return false;
-            }
-            else
+            if (blackBuffer.All(t => t == true))
             {
                 Console.WriteLine("Loading");
                 return true;
             }
-
+            else
+            {
+                Console.WriteLine("Not Loading");
+                return false;
+            }
         }
 
         private class User32

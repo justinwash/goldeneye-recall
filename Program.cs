@@ -22,8 +22,7 @@ namespace GoldenEyeRecall
                 {
                     ResetVid();
                 }
-
-                Thread.Sleep(56);
+                Thread.Sleep(14);
             }
         }
 
