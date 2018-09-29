@@ -11,18 +11,23 @@ namespace GoldenEyeRecall
         static void Main(string[] args)
         {
             var p = new ScreenReader();
-
+            var playing = false;
             while (true)
             {
                 if (!p.IsLoading())
                 {
                     PlayVid();
+                    playing = true;
                 }
                 else
                 {
-                    ResetVid();
+                    if (playing)
+                    {
+                        ResetVid();
+                        playing = false;
+                    }
                 }
-                Thread.Sleep(14);
+                Thread.Sleep(28);
             }
         }
 

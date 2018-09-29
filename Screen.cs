@@ -17,7 +17,7 @@ namespace Screen
 
         public void UpdateBuffer(byte[] data)
         {
-            if (buffer.Count >= 3)
+            if (buffer.Count >= 6)
             {
                 buffer.Remove(buffer[0]);
             }
@@ -30,11 +30,11 @@ namespace Screen
             int width = rect.right - rect.left;
             int height = rect.bottom - rect.top;
 
-            var bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            var bmp = new Bitmap(48, 24, PixelFormat.Format24bppRgb);
             Graphics graphics = Graphics.FromImage(bmp);
-            graphics.CopyFromScreen(rect.left, rect.top, 0, 0, new Size(width, height), CopyPixelOperation.SourceCopy);
-
-            var testRect = new Rectangle(bmp.Width / 2, bmp.Height / 3, 28, 12);
+            graphics.CopyFromScreen(rect.left + width / 2, rect.top + height / 4, 0, 0, new Size(48, 24), CopyPixelOperation.SourceCopy);
+            //bmp.Save("pic.png", ImageFormat.Png);
+            var testRect = new Rectangle(0, 0, 48, 24);
             BitmapData bmpData = bmp.LockBits(testRect, System.Drawing.Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat);
             IntPtr ptr = bmpData.Scan0;
             int bytes = Math.Abs(bmpData.Stride) * bmpData.Height;
@@ -53,28 +53,26 @@ namespace Screen
             List<bool> blackBuffer = new List<bool>();
             foreach (var b in buffer)
             {
-                var avg = b.Average(x => int.Parse(x.ToString()) * 2);
-                if (avg > 70)
+                var avg = b.Average(x => int.Parse(x.ToString()));
+                if (avg > 10)
                 {
-                    Console.WriteLine("not black enough: " + avg);
+                    Console.Write("\r{0}%   ", avg);
                     //buffer.Clear();
                     blackBuffer.Add(false);
                 }
                 else
                 {
-                    Console.WriteLine("black enough: " + avg);
+                    Console.Write("\r{0}%   ", avg);
                     blackBuffer.Add(true);
                 }
             }
 
             if (blackBuffer.All(t => t == true))
             {
-                Console.WriteLine("Loading");
                 return true;
             }
             else
             {
-                Console.WriteLine("Not Loading");
                 return false;
             }
         }
